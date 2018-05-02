@@ -327,6 +327,46 @@ is critical: there isn't any point to writing a solution if it doesn't meet the 
 if it isn't maintainable, it might not meet future needs. It is often best to form a solution with
 peers, rather than alone: your solutions will be better for this.
 
+# The course
+
+This course teaches you how to write programs using C++. The course is suitable for people who are
+novices to C++, even if you already have programming experience; whether it is a year or a decade
+doesn't matter. Learning how to write programs using a new programming language is like making a new
+friend: you can't skip to the good parts just because you've made other friends. As such, this
+course's philosophy is to expose programming novices and experienced programmers to the same
+material, so that they develop the same values.
+
+You won't be an expert C++ programmer by the course's end. That takes time and experience. You will,
+however, be able to write programs using C++, and develop that experience following this course.
+_Applied Modern C++_ will put you in a position that is ripe for understanding computer science,
+software engineering, and how to interact with other disciplines.
+
+You'll be required to implement several assignments along the way. They will be automatically graded
+by a computer, which will tell you if you met the program requirements correctly and reliably. There
+won't be any quizzes, but there are problem sets.
+
+## Resources
+
+This course uses a wide variety of resources. The most important resource is the textbook that we
+draw most of our material from: _Programming -- Principles and Practice Using C++_. At the time of
+recording, the book is in its second edition. To complete any of the quizzes, you will be required
+to purchase a copy of this book. It has valuable content, written by a programmer with over thirty
+years of experience with programming in C++, who also taught at Texas A&M University, and is now the
+Managing Director for Technology at one of the world's largest banks, Morgan Stanley. You'd do well
+to purchase a copy of this book to follow with this course.
+
+The other incredibly important resource that we'll rely upon is the C++ community itself. We
+previously discussed how programming is a social activity: you should take advantage of this from
+the get-go. There is a Discord channel called hash-include, which is an active and inclusive
+community for people who are interested in C++. For those who aren't familiar with Discord, it is
+an online chatroom, where you can communicate with others who have similar interests.
+
+We will cover other resources as they become necessecary.
+
+# Next time
+
+In the next video, we'll cover how to get your computer set up for subsequent activities.
+
 # Bibliography
 
 * European Space Agency. _Our Activities_. Retrived from: https://www.esa.int/Our_Activities.
