@@ -38,7 +38,7 @@ int main()
    name += quest; // same as `name = name + quest`
    std::cout << "\tCompound concatenation: " << name << '\n';
 
-   constexpr auto position = 0;
+   constexpr auto position = 4;
    std::cout << "\tFifth character:\n"
       "\t\tname[position]: " << name[position] << "\n"
       "\t\tquest[position]: " << quest[position] << '\n';

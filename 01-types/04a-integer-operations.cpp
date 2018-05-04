@@ -1,5 +1,4 @@
 #include "amcpp/facilities.hpp"
-#include <cmath>
 #include <iostream>
 
 int main()

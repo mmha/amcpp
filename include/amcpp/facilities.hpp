@@ -2,6 +2,7 @@
 #define AMCPP_FACILITIES_HPP
 
 #include <algorithm>
+#include <cstdlib>
 #include <exception>
 #include <iostream>
 #include <iterator>
@@ -12,10 +13,10 @@ namespace amcpp {
    /// @param error_message The message written to the error stream.
    /// @note This function terminates the program.
    ///
-   [[noreturn]] void error(std::string_view const error_message) noexcept
+   [[noreturn]] void error(std::string_view const error_message) noexcept // TODO(cjdb): move this to a source file
    {
       std::cerr << error_message << '\n';
-      std::exit(1);
+      std::exit(EXIT_FAILURE);
    }
 
    /// @brief Returns zero with the correct sign and size for the container's size.
@@ -23,7 +24,7 @@ namespace amcpp {
    /// @param rng The object to get the size from.
    ///
    template <typename Rng>
-   constexpr auto zero(Rng&& rng) noexcept
+   [[nodiscard]] constexpr auto zero(Rng&& rng) noexcept
    {
       return decltype(std::size(rng)){};
    }
@@ -39,12 +40,10 @@ namespace amcpp {
    /// @return t
    /// @note This function terminates if goodbit or eofbit are not set.
    ///
-   template <typename T>
-   T handle_failbit(T const& t)
+   void handle_failbit() // TODO(cjdb): move this to a source file.
    {
       if (std::cin.eof()) {
          std::cin.clear(std::ios_base::goodbit);
-         return t;
       }
       else if (std::cin.bad()) {
          error("Non-recoverable error");
@@ -54,44 +53,54 @@ namespace amcpp {
       }
    }
 
-   /// @brief Used to determine 
+   /// @brief Used to determine whether getline should be used, or if the get-from operator is
+   ///        preferred.
    enum class get_input_as {
       line,
       space
    };
 
+   /// @brief Determines if T is a string type or not.
+   /// @tparam T The type to inspect.
+   /// @return true if T is a string type, false otherwise.
+   ///
+   template <typename T>
+   constexpr auto is_string_v = false;
+
+   /// @brief Specialisation for is_string_v for std::basic_string types.
+   ///
+   /// Always returns true.
+   /// @tparam Char The string's character type.
+   /// @tparam Traits The string's traits type.
+   /// @ref See is_string_v.
+   ///
+   template <typename Char, typename Traits>
+   constexpr auto is_string_v<std::basic_string<Char, Traits>> = true;
+
    /// @brief Reads input from the character input as a T.
    /// @tparam T The type the of the object the character input should write to.
    /// @tparam get_input_as Used to determine if string input should be delimited by spaces or by
-   /// lines.
+   ///                      lines. Ignored if T is not a string type.
    /// @return An object of type T, initialised with data from the character input.
    /// @note An exception is thrown if the data is not properly formatted.
    /// @note The program terminates if a non-recoverable error occurs.
    ///
-   template <typename T, get_input_as = get_input_as::line>
-   T from_cin()
+   template <typename T, get_input_as type = get_input_as::line>
+   [[nodiscard]] T from_cin()
    {
-      if (auto t = T{}; std::cin >> t) {
-         return t;
+      auto t = T{};
+      if constexpr (is_string_v<T> && type == get_input_as::line) {
+         std::getline(std::cin, t);
       }
       else {
-         amcpp::handle_failbit(t);
+         std::cin >> t;
       }
-   }
 
-   /// @brief Reads input from the character input as a std::string, where the input is delimited by
-   /// the newline character.
-   /// @ref from_cin
-   ///
-   template <>
-   inline std::string from_cin<std::string, get_input_as::line>()
-   {
-      if (auto s = std::string{}; std::getline(std::cin, s)) {
-         return s;
+      if (not std::cin) {
+         handle_failbit();
       }
-      else {
-         amcpp::handle_failbit(s);
-      }
+
+      return t;
    }
 
    /// @ref See en.cppreference.com/cpp/algorithm/copy
