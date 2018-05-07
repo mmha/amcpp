@@ -16,13 +16,21 @@
 cmake_minimum_required(VERSION 3.10)
 project(amcpp CXX)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+
 enable_testing()
 include(CTest)
 
+find_package(MSGSL REQUIRED)
+find_package(Sanitizer COMPONENTS address undefined)
+
 function(build file)
    set(target "amcpp.${file}")
-   add_executable("${target}" "${file}.cpp")
-   target_compile_options("${target}" PUBLIC
+   add_executable(${target} "${file}.cpp")
+   target_compile_options(${target} PUBLIC
       -Wall
       -Wextra
       -Wno-attributes
@@ -38,40 +46,15 @@ function(build file)
       -Werror
       -fdiagnostics-color=always
       $<$<CONFIG:Debug>:
-         -O0
-         -g3
-         -fno-inline
-         -fstack-protector-all
-         -fno-omit-frame-pointer
-         -fno-optimize-sibling-calls>
-      $<$<CONFIG:Release>:
-         -O3
-         -g0
-         -DNDEBUG>
-      $<$<CONFIG:MinSizeRel>:
-         -Os
-         -g0
-         -DNDEBUG>
-      $<$<CONFIG:RelWithDebInfo>:
-         -O3
-         -g3
-         -DNDEBUG>)
-   if (NOT WIN32)
-      target_compile_options("${target}" PUBLIC
-         $<$<CONFIG:Debug>:
-            -fsanitize=address
-            -fsanitize=undefined>
-         $<$<CONFIG:RelWithDebInfo>:
-            -fsanitize=address
-            -fsanitize=undefined>)
-   endif()
-   target_compile_definitions("${target}" PUBLIC
-      $<$<CONFIG:Release>: NDEBUG>
-      $<$<CONFIG:MinSizeRel>: NDEBUG>)
-   target_compile_features("${target}" PUBLIC cxx_std_17)
+         -fstack-protector-all>)
+   target_link_libraries(${target} PUBLIC
+      $<$<CONFIG:Debug>:Sanitizer::all>
+      $<$<CONFIG:RelWithDebInfo>:Sanitizer::all>)
+   target_compile_features(${target} PUBLIC cxx_std_17)
+   target_link_libraries(${target} PUBLIC MSGSL::gsl)
+   target_include_directories(${target} PUBLIC "${PROJECT_SOURCE_DIR}/include")
 endfunction()
 
-include_directories(include)
 add_subdirectory(00-hello-world)
 add_subdirectory(01-types)
 add_subdirectory(02-computation)
